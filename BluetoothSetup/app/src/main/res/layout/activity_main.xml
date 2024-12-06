@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Bluetooth Icon -->
@@ -10,7 +11,7 @@
         android:id="@+id/bluetoothIv"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_bluetooth_on" />
 
     <!-- Bluetooth Status -->
@@ -18,38 +19,33 @@
         android:id="@+id/bluetoothStatusTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bluetoothIv"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:padding="8dp"
         android:text="Bluetooth is off"
         android:textSize="16sp"
         android:textColor="#000000" />
 
-    <!-- Connect Button in the Top-Right Corner -->
-    <Button
-        android:id="@+id/connectBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:text="Connect" />
+    <!-- Buttons for Bluetooth Actions -->
 
-    <!-- Turn On Button -->
     <Button
         android:id="@+id/turnOnBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bluetoothStatusTv"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:text="Turn On" />
 
-    <!-- Paired Devices Button -->
+    <Button
+        android:id="@+id/connectBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Connect" />
+
     <Button
         android:id="@+id/pairedBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/turnOnBtn"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:text="Get Paired Devices" />
 
     <!-- Paired Devices TextView -->
@@ -57,31 +53,34 @@
         android:id="@+id/pairedTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pairedBtn"
         android:padding="8dp"
         android:textColor="#000000"
         android:background="#EEEEEE" />
 
-    <!-- Data Log Header -->
     <TextView
         android:id="@+id/log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pairedTv"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:padding="8dp"
         android:text="Data Log"
         android:textSize="16sp"
         android:textColor="#000000" />
 
-    <!-- Data Log TextView -->
-    <TextView
-        android:id="@+id/dataLogTv"
+    <!-- Scrollable Data Log -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/log"
-        android:padding="8dp"
-        android:textColor="#000000"
-        android:background="#EEEEEE" />
+        android:id="@+id/scrollViewforDataLog"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#EEEEEE">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/dataLogTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="#000000" />
+    </ScrollView>
+
+</LinearLayout>

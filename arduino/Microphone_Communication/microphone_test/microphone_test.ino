@@ -88,7 +88,7 @@ void recordAndCalculateAverage() {
   if (numReadings > 0) {
     double averageFrequency = totalFrequency / numReadings;
     Serial.println("Average Frequency: " + String(averageFrequency) + " Hz");
-    SerialBT.println("Average Frequency: " + String(averageFrequency) + " Hz");
+    SerialBT.println(averageFrequency);
   }
 }
 
@@ -104,9 +104,6 @@ void setup() {
 void loop() {
   if (SerialBT.hasClient()) {
     digitalWrite(BLUE_LED, HIGH);
-    delay(500);
-    digitalWrite(BLUE_LED, LOW);
-    delay(500);
 
     if (SerialBT.available()) {
       char command = SerialBT.read();

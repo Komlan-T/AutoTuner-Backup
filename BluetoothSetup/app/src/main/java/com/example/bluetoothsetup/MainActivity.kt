@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -157,6 +158,39 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun startListening() {
+        isListening = true
+        listeningThread = Thread {
+            val inputStream = bSocket?.inputStream
+            val buffer = ByteArray(1024)
+
+            while (isListening && inputStream != null) {
+                try {
+                    val bytesRead = inputStream.read(buffer)
+                    if (bytesRead > 0) {
+                        val receivedData = String(buffer, 0, bytesRead)
+                        runOnUiThread {
+                            dataLogTv.append("$receivedData\n")
+                            // Scroll to the bottom
+                            val scrollView = findViewById<ScrollView>(R.id.scrollViewforDataLog)
+                            scrollView.post {
+                                scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                            }
+                        }
+                    }
+                } catch (e: IOException) {
+                    runOnUiThread {
+                        dataLogTv.append("Error while reading: ${e.message}\n")
+                    }
+                    isListening = false
+                }
+            }
+        }
+        listeningThread?.start()
+    }
+
+
+
     @RequiresApi(Build.VERSION_CODES.S)
     private fun connectToDevice(deviceAddress: String) {
         val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
@@ -175,24 +209,8 @@ class MainActivity : ComponentActivity() {
 
             Toast.makeText(this, "Connected to ESP", Toast.LENGTH_SHORT).show()
 
-            val inputStream = bSocket?.inputStream
-            val outputStream = bSocket?.outputStream
-
-            outputStream?.write("Sent from APP (Client) to ESP (Server)".toByteArray())
-
-            runOnUiThread {
-                dataLogTv.append("Sent: Sent from APP (Client) to ESP (Server)\n")
-            }
-
-            val buffer = ByteArray(1024)
-            val bytesRead = inputStream?.read(buffer) ?: 0
-
-            if (bytesRead > 0) {
-                val receivedData = String(buffer, 0, bytesRead)
-                runOnUiThread {
-                    dataLogTv.append("Received: $receivedData\n")
-                }
-            }
+            // Start listening for incoming data
+            startListening()
         } catch (e: Exception) {
             e.printStackTrace()
             runOnUiThread {
@@ -201,8 +219,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
+        isListening = false
+        listeningThread?.interrupt()
+        bSocket?.close()
         unregisterReceiver(bluetoothStateReceiver)
     }
 }
